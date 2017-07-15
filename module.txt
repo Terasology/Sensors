@@ -1,9 +1,9 @@
 {
     "id" : "Sensors",
     "version" : "0.1.0-SNAPSHOT",
-    "author" : "",
+    "author" : "0shine0",
     "displayName" : "Sensors",
-    "description" : "",
+	"description" : "This module is used to sense other entities in various ways",
     "dependencies" : [],
     "serverSideOnly" : false
 }
