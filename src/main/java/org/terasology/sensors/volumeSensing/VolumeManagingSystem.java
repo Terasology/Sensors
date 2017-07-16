@@ -1,5 +1,7 @@
 package org.terasology.sensors.volumeSensing;
 
+import java.util.Map;
+
 import org.terasology.entitySystem.entity.EntityBuilder;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -8,7 +10,6 @@ import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
 import org.terasology.entitySystem.entity.lifecycleEvents.OnChangedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.location.Location;
 import org.terasology.logic.location.LocationComponent;
@@ -18,9 +19,13 @@ import org.terasology.physics.StandardCollisionGroup;
 import org.terasology.physics.components.TriggerComponent;
 import org.terasology.physics.shapes.SphereShapeComponent;
 import org.terasology.registry.In;
+import org.terasology.sensors.EntitySensorBiMap;
 import org.terasology.sensors.SensorComponent;
 
-@RegisterSystem(RegisterMode.AUTHORITY)
+import com.google.api.client.util.Maps;
+import com.google.common.collect.HashBiMap;
+
+@RegisterSystem
 public class VolumeManagingSystem extends BaseComponentSystem{
     @In
     EntityManager entityManager;
@@ -35,11 +40,10 @@ public class VolumeManagingSystem extends BaseComponentSystem{
         builder.addComponent(network);
         
         SensorComponent sensorC = new SensorComponent();
-        sensorC.sensorParent = entity;
         builder.addComponent(sensorC);
         
         TriggerComponent trigger = new TriggerComponent();
-        trigger.collisionGroup = StandardCollisionGroup.ALL;
+        trigger.collisionGroup = StandardCollisionGroup.SENSOR;
         trigger.detectGroups = volumeSensor.detectGroups;
         builder.addComponent(trigger);
         
@@ -62,20 +66,19 @@ public class VolumeManagingSystem extends BaseComponentSystem{
             Location.attachChild(entity, sensor);
         }
         
-        volumeSensor.sensor = sensor;
-        entity.saveComponent(volumeSensor);
+        EntitySensorBiMap.mapSensorAndEntity(entity, sensor);
     }
     
     @ReceiveEvent(components = VolumeSensorComponent.class)
     public void changeSensor(OnChangedComponent event, EntityRef entity, LocationComponent location){
         VolumeSensorComponent volumeSensor = entity.getComponent(VolumeSensorComponent.class);
-        EntityRef sensor = volumeSensor.sensor;
+        EntityRef sensor = EntitySensorBiMap.getSensorForEntity(entity);
         
         TriggerComponent trigger = sensor.getComponent(TriggerComponent.class);
         if(trigger == null){
             return;
         }
-        trigger.collisionGroup = StandardCollisionGroup.ALL;
+        trigger.collisionGroup = StandardCollisionGroup.SENSOR;
         trigger.detectGroups = volumeSensor.detectGroups;
         sensor.saveComponent(trigger);
         
@@ -108,8 +111,8 @@ public class VolumeManagingSystem extends BaseComponentSystem{
     
     @ReceiveEvent(components = {VolumeSensorComponent.class, LocationComponent.class})
     public void removeSensor(BeforeDeactivateComponent event, EntityRef entity){
-        VolumeSensorComponent volumeSensor = entity.getComponent(VolumeSensorComponent.class);
-        volumeSensor.sensor.destroy();
+        EntityRef sensor = EntitySensorBiMap.removeMappingForEntity(entity);
+        sensor.destroy();
     }
 
 }
