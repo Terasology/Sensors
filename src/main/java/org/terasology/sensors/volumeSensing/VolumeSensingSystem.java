@@ -14,7 +14,6 @@ import org.terasology.physics.components.TriggerComponent;
 import org.terasology.physics.events.CollideEvent;
 import org.terasology.registry.In;
 import org.terasology.sensors.EntitySensedEvent;
-import org.terasology.sensors.EntitySensorBiMap;
 import org.terasology.sensors.SensorComponent;
 
 @RegisterSystem
@@ -37,29 +36,36 @@ public class VolumeSensingSystem extends BaseComponentSystem{
     
     @ReceiveEvent
     public void entityDetected(CollideEvent event, EntityRef entity, SensorComponent sensor, TriggerComponent trigger){
-        EntityRef sensorParent = EntitySensorBiMap.getEntityForSensor(entity);
+        EntityRef sensorParent = sensor.entity;
         if(sensorParent == null || sensorParent == EntityRef.NULL){
             return;
         }
-        
+        VolumeSensorComponent volumeSensor = sensorParent.getComponent(VolumeSensorComponent.class);
+        if(volumeSensor == null){
+            return;
+        }
         EntityRef target = event.getOtherEntity();
         
         if(sensorParent.equals(target)){
             return;
         }
         
-        LocationComponent sensorLoc = sensorParent.getComponent(LocationComponent.class);
+        LocationComponent loc = sensorParent.getComponent(LocationComponent.class);
         LocationComponent targetLoc = target.getComponent(LocationComponent.class);
-        if(sensorLoc == null || targetLoc == null){
+        if(loc == null || targetLoc == null){
             return;
         }
-        Vector3f sensorPos = sensorLoc.getWorldPosition();
+        Vector3f sensorPos = loc.getWorldPosition();
         Vector3f targetPos = targetLoc.getWorldPosition();
         float distance = sensorPos.distance(targetPos);
+        if(distance > volumeSensor.range){
+            return;
+        }
+        
         Vector3f dir = targetPos.sub(sensorPos);
         dir.normalize();
         
-        HitResult result  = physics.rayTrace(sensorPos, dir, distance, 
+        HitResult result  = physics.rayTrace(sensorPos, dir, distance + 1.0f, 
                 trigger.detectGroups.toArray(new CollisionGroup[trigger.detectGroups.size()]));
         
         if(result.isHit()){
