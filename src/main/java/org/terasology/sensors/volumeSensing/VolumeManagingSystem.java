@@ -7,6 +7,8 @@ import org.terasology.entitySystem.event.EventPriority;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.logic.health.DestroyEvent;
+import org.terasology.logic.health.EngineDamageTypes;
 import org.terasology.logic.location.Location;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
@@ -135,7 +137,7 @@ public class VolumeManagingSystem extends BaseComponentSystem{
         EntityRef sensor = volumeSensor.sensor;
         volumeSensor.sensor = EntityRef.NULL;
         if(sensor != null && sensor != EntityRef.NULL){
-            sensor.destroy();
+            sensor.send(new DestroyEvent(EntityRef.NULL, EntityRef.NULL, EngineDamageTypes.DIRECT.get()));
         }
     }
 

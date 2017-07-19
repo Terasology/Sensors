@@ -16,7 +16,7 @@ public class VolumeSensorComponent implements Component{
     public EntityRef sensor = EntityRef.NULL;
     @Replicate
     public List<CollisionGroup> detectGroups = Lists.<CollisionGroup>newArrayList(StandardCollisionGroup.DEFAULT, 
-            StandardCollisionGroup.CHARACTER, StandardCollisionGroup.WORLD);
+            StandardCollisionGroup.CHARACTER);
     @Replicate
     public float range = 5.0f;
     @Replicate
