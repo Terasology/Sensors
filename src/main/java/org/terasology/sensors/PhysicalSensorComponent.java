@@ -4,7 +4,9 @@ import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.network.Replicate;
 
-public class SensorComponent implements Component{
+public class PhysicalSensorComponent implements Component{
     @Replicate
-    public EntityRef physicalSensor = EntityRef.NULL;
+    public EntityRef sensor = EntityRef.NULL;
+    @Replicate
+    public boolean activated = false;
 }

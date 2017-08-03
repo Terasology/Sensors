@@ -1,5 +1,7 @@
 package org.terasology.sensors.volumeSensing;
 
+import java.util.List;
+
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.EventPriority;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -10,11 +12,14 @@ import org.terasology.math.geom.Vector3f;
 import org.terasology.physics.CollisionGroup;
 import org.terasology.physics.HitResult;
 import org.terasology.physics.Physics;
+import org.terasology.physics.StandardCollisionGroup;
 import org.terasology.physics.components.TriggerComponent;
 import org.terasology.physics.events.CollideEvent;
 import org.terasology.registry.In;
 import org.terasology.sensors.EntitySensedEvent;
 import org.terasology.sensors.SensorComponent;
+
+import com.google.common.collect.Lists;
 
 @RegisterSystem
 public class VolumeSensingSystem extends BaseComponentSystem{
@@ -36,7 +41,7 @@ public class VolumeSensingSystem extends BaseComponentSystem{
     
     @ReceiveEvent
     public void entityDetected(CollideEvent event, EntityRef entity, SensorComponent sensor, TriggerComponent trigger){
-        EntityRef sensorParent = sensor.entity;
+        EntityRef sensorParent = sensor.physicalSensor;
         if(sensorParent == null || sensorParent == EntityRef.NULL){
             return;
         }
@@ -62,11 +67,31 @@ public class VolumeSensingSystem extends BaseComponentSystem{
             return;
         }
         
+        //checks if the sensor should be notified only if the entity is visible
+        if(!sensorParent.hasComponent(TargetVisibleComponent.class)){
+            sensorParent.send(new EntitySensedEvent(target));
+            return;
+        }
+        
+        //should sense entity only if target is visible
         Vector3f dir = targetPos.sub(sensorPos);
         dir.normalize();
         
+        List<CollisionGroup> rayGroup = Lists.newArrayList();
+        rayGroup.addAll(trigger.detectGroups);
+        boolean hasWorld = false;
+        for(CollisionGroup group : rayGroup){
+            if(group.getFlag() == StandardCollisionGroup.WORLD.getFlag()){
+                hasWorld = true;
+            }
+        }
+        
+        if(!hasWorld){
+            rayGroup.add(StandardCollisionGroup.WORLD);
+        }
+        
         HitResult result  = physics.rayTrace(sensorPos, dir, distance + 1.0f, 
-                trigger.detectGroups.toArray(new CollisionGroup[trigger.detectGroups.size()]));
+                rayGroup.toArray(new CollisionGroup[rayGroup.size()]));
         
         if(result.isHit()){
             if(target.equals(result.getEntity())){
