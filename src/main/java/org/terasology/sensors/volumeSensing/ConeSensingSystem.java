@@ -12,9 +12,24 @@ import org.terasology.physics.components.TriggerComponent;
 import org.terasology.physics.events.CollideEvent;
 import org.terasology.sensors.SensorComponent;
 
+/**
+ * A system responsible for detecting entities with a conical radius, defined from a point with a particular aperture.
+ * If a ConeSensorComponent is present, then this overrides VolumeSensingSystem initially with a higher priority, in
+ * order to add additional detection requirements.
+ */
 @RegisterSystem
 public class ConeSensingSystem extends BaseComponentSystem{
-    
+
+    /**
+     * This event handler has a higher priority, so that events are handled here first before {@link VolumeSensingSystem}.
+     * This allows entities not detected within a specified forward-facing cone to be ignored. Any entities without a
+     * {@link ConeSensorComponent} are also ignored, although these events will still be handled by {@link VolumeSensingSystem}.
+     *
+     * @param event the issued event
+     * @param entity the target entity
+     * @param sensor the sensor belonging to the target entity
+     * @param trigger the trigger belonging to the target entity
+     */
     @ReceiveEvent(priority = EventPriority.PRIORITY_HIGH)
     public void entityDetected(CollideEvent event, EntityRef entity, SensorComponent sensor, TriggerComponent trigger){
         EntityRef sensorParent = sensor.physicalSensor;

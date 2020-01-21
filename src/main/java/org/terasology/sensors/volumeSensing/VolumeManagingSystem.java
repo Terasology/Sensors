@@ -23,11 +23,27 @@ import org.terasology.sensors.DeactivateSensorEvent;
 import org.terasology.sensors.PhysicalSensorComponent;
 import org.terasology.sensors.SensorComponent;
 
+/**
+ * A system responsible for managing detection volumes. It creates trigger volumes that can be used to detect if an
+ * entity enters another's radius. It is then the responsibility of other individual sensing sub-systems, such as
+ * {@link VolumeSensingSystem} and {@link ConeSensingSystem} to determine if the triggering entity has been detected.
+ */
 @RegisterSystem
 public class VolumeManagingSystem extends BaseComponentSystem{
     @In
     EntityManager entityManager;
-    
+
+    /**
+     * This event handler is responsible for creating trigger volumes used to detect entities. It creates a new sensor
+     * entity which contains all of the trigger components needed to sense entities within a specified volume and adds
+     * a reference to this sensor in the attached {@link PhysicalSensorComponent}.
+     *
+     * @param event the event received
+     * @param entity the entity affected
+     * @param volumeSensor a component containing details of the volume around the affected entity to sense
+     * @param location a component containing the entity's location
+     * @param physical a component containing information about the entity's sensor
+     */
     @ReceiveEvent
     public void createVolumeSensor(ActivateSensorEvent event, EntityRef entity,
             VolumeSensorComponent volumeSensor, LocationComponent location,
@@ -80,7 +96,16 @@ public class VolumeManagingSystem extends BaseComponentSystem{
         physical.activated = true;
         entity.saveComponent(physical);
     }
-    
+
+    /**
+     * When a {@link VolumeSensorComponent} is changed, then this method modifier the existing sensor to utilise the
+     * new properties contained within the component.
+     *
+     * @param event the event received
+     * @param entity the affected entity
+     * @param volumeSensor a sensor belonging to the affected entity
+     * @param physical a component containing a reference to the affected sensor entity
+     */
     @ReceiveEvent(components = {VolumeSensorComponent.class})
     public void changeVolumeSensor(OnChangedComponent event, EntityRef entity,
             VolumeSensorComponent volumeSensor, PhysicalSensorComponent physical){
@@ -127,7 +152,15 @@ public class VolumeManagingSystem extends BaseComponentSystem{
         trigger.detectGroups = volumeSensor.detectGroups;
         sensor.saveComponent(trigger);
     }
-    
+
+    /**
+     * When a sensor is deactivated, this method removes the sensor entity from the world.
+     *
+     * @param event the event received
+     * @param entity the affected entity
+     * @param volumeSensor the volume covered by the sensor
+     * @param physical a component containing a reference to the sensor entity
+     */
     @ReceiveEvent(components = {VolumeSensorComponent.class, LocationComponent.class})
     public void removeVolumeSensor(DeactivateSensorEvent event, EntityRef entity,
             VolumeSensorComponent volumeSensor, PhysicalSensorComponent physical){
