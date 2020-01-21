@@ -21,6 +21,10 @@ import org.terasology.sensors.SensorComponent;
 
 import com.google.common.collect.Lists;
 
+/**
+ * A sensor sub-system responsible for marking an entity within a detection radius as detected, assuming that there are
+ * no other entities that lie between the triggering entity to the triggered entity.
+ */
 @RegisterSystem
 public class VolumeSensingSystem extends BaseComponentSystem{
     
@@ -38,7 +42,16 @@ public class VolumeSensingSystem extends BaseComponentSystem{
             event.consume();
         }
     }
-    
+
+    /**
+     * This event handler is responsible for managing when an entity has been detected. It sends {@link EntitySensedEvent}
+     * events if the detection is successful.
+     *
+     * @param event the event received
+     * @param entity the affected entity
+     * @param sensor the affected sensor
+     * @param trigger the trigger volume that was entered
+     */
     @ReceiveEvent
     public void entityDetected(CollideEvent event, EntityRef entity, SensorComponent sensor, TriggerComponent trigger){
         EntityRef sensorParent = sensor.physicalSensor;
