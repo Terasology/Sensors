@@ -8,6 +8,7 @@ import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.physics.CollisionGroup;
 import org.terasology.physics.HitResult;
@@ -27,14 +28,14 @@ import com.google.common.collect.Lists;
  */
 @RegisterSystem
 public class VolumeSensingSystem extends BaseComponentSystem{
-    
+
     @In
     private Physics physics;
-    
+
     @ReceiveEvent(priority = EventPriority.PRIORITY_CRITICAL)
     public void removeCollisionResponse(CollideEvent event, EntityRef entity){
         EntityRef target = event.getOtherEntity();
-        
+
         if(!target.exists()){
             event.consume();
         }
@@ -63,11 +64,11 @@ public class VolumeSensingSystem extends BaseComponentSystem{
             return;
         }
         EntityRef target = event.getOtherEntity();
-        
+
         if(sensorParent.equals(target)){
             return;
         }
-        
+
         LocationComponent loc = sensorParent.getComponent(LocationComponent.class);
         LocationComponent targetLoc = target.getComponent(LocationComponent.class);
         if(loc == null || targetLoc == null){
@@ -79,17 +80,17 @@ public class VolumeSensingSystem extends BaseComponentSystem{
         if(distance > volumeSensor.range){
             return;
         }
-        
+
         //checks if the sensor should be notified only if the entity is visible
         if(!sensorParent.hasComponent(TargetVisibleComponent.class)){
             sensorParent.send(new EntitySensedEvent(target));
             return;
         }
-        
+
         //should sense entity only if target is visible
         Vector3f dir = targetPos.sub(sensorPos);
         dir.normalize();
-        
+
         List<CollisionGroup> rayGroup = Lists.newArrayList();
         rayGroup.addAll(trigger.detectGroups);
         boolean hasWorld = false;
@@ -98,19 +99,19 @@ public class VolumeSensingSystem extends BaseComponentSystem{
                 hasWorld = true;
             }
         }
-        
+
         if(!hasWorld){
             rayGroup.add(StandardCollisionGroup.WORLD);
         }
-        
-        HitResult result  = physics.rayTrace(sensorPos, dir, distance + 1.0f, 
+
+        HitResult result  = physics.rayTrace(JomlUtil.from(sensorPos), JomlUtil.from(dir), distance + 1.0f,
                 rayGroup.toArray(new CollisionGroup[rayGroup.size()]));
-        
+
         if(result.isHit()){
             if(target.equals(result.getEntity())){
                 sensorParent.send(new EntitySensedEvent(target));
             }
         }
-        
+
     }
 }
