@@ -1,9 +1,10 @@
 {
-    "id" : "Sensors",
-    "version" : "0.1.0-SNAPSHOT",
-    "author" : "0shine0",
-    "displayName" : "Sensors",
-	"description" : "This module is used to sense other entities in various ways",
-    "dependencies" : [],
-    "serverSideOnly" : false
+    "id": "Sensors",
+    "version": "1.0.0",
+    "author": "0shine0",
+    "displayName": "Sensors",
+    "description": "This library module is used to sense other entities in various ways",
+    "dependencies": [],
+    "serverSideOnly": false,
+    "isLibrary": true
 }
