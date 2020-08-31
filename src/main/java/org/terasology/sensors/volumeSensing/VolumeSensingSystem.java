@@ -8,6 +8,7 @@ import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.physics.CollisionGroup;
 import org.terasology.physics.HitResult;
@@ -26,26 +27,25 @@ import com.google.common.collect.Lists;
  * no other entities that lie between the triggering entity to the triggered entity.
  */
 @RegisterSystem
-public class VolumeSensingSystem extends BaseComponentSystem{
-    
+public class VolumeSensingSystem extends BaseComponentSystem {
+
     @In
     private Physics physics;
-    
+
     @ReceiveEvent(priority = EventPriority.PRIORITY_CRITICAL)
-    public void removeCollisionResponse(CollideEvent event, EntityRef entity){
+    public void removeCollisionResponse(CollideEvent event, EntityRef entity) {
         EntityRef target = event.getOtherEntity();
-        
-        if(!target.exists()){
+
+        if (!target.exists()) {
             event.consume();
-        }
-        else if(target.hasComponent(SensorComponent.class)){
+        } else if (target.hasComponent(SensorComponent.class)) {
             event.consume();
         }
     }
 
     /**
-     * This event handler is responsible for managing when an entity has been detected. It sends {@link EntitySensedEvent}
-     * events if the detection is successful.
+     * This event handler is responsible for managing when an entity has been detected. It sends {@link
+     * EntitySensedEvent} events if the detection is successful.
      *
      * @param event the event received
      * @param entity the affected entity
@@ -53,64 +53,62 @@ public class VolumeSensingSystem extends BaseComponentSystem{
      * @param trigger the trigger volume that was entered
      */
     @ReceiveEvent
-    public void entityDetected(CollideEvent event, EntityRef entity, SensorComponent sensor, TriggerComponent trigger){
+    public void entityDetected(CollideEvent event, EntityRef entity, SensorComponent sensor, TriggerComponent trigger) {
         EntityRef sensorParent = sensor.physicalSensor;
-        if(sensorParent == null || sensorParent == EntityRef.NULL){
+        if (sensorParent == null || sensorParent == EntityRef.NULL) {
             return;
         }
         VolumeSensorComponent volumeSensor = sensorParent.getComponent(VolumeSensorComponent.class);
-        if(volumeSensor == null){
+        if (volumeSensor == null) {
             return;
         }
         EntityRef target = event.getOtherEntity();
-        
-        if(sensorParent.equals(target)){
+
+        if (sensorParent.equals(target)) {
             return;
         }
-        
+
         LocationComponent loc = sensorParent.getComponent(LocationComponent.class);
         LocationComponent targetLoc = target.getComponent(LocationComponent.class);
-        if(loc == null || targetLoc == null){
+        if (loc == null || targetLoc == null) {
             return;
         }
         Vector3f sensorPos = loc.getWorldPosition();
         Vector3f targetPos = targetLoc.getWorldPosition();
         float distance = sensorPos.distance(targetPos);
-        if(distance > volumeSensor.range){
+        if (distance > volumeSensor.range) {
             return;
         }
-        
+
         //checks if the sensor should be notified only if the entity is visible
-        if(!sensorParent.hasComponent(TargetVisibleComponent.class)){
+        if (!sensorParent.hasComponent(TargetVisibleComponent.class)) {
             sensorParent.send(new EntitySensedEvent(target));
             return;
         }
-        
+
         //should sense entity only if target is visible
         Vector3f dir = targetPos.sub(sensorPos);
         dir.normalize();
-        
+
         List<CollisionGroup> rayGroup = Lists.newArrayList();
         rayGroup.addAll(trigger.detectGroups);
         boolean hasWorld = false;
-        for(CollisionGroup group : rayGroup){
-            if(group.getFlag() == StandardCollisionGroup.WORLD.getFlag()){
+        for (CollisionGroup group : rayGroup) {
+            if (group.getFlag() == StandardCollisionGroup.WORLD.getFlag()) {
                 hasWorld = true;
             }
         }
-        
-        if(!hasWorld){
+
+        if (!hasWorld) {
             rayGroup.add(StandardCollisionGroup.WORLD);
         }
-        
-        HitResult result  = physics.rayTrace(sensorPos, dir, distance + 1.0f, 
-                rayGroup.toArray(new CollisionGroup[rayGroup.size()]));
-        
-        if(result.isHit()){
-            if(target.equals(result.getEntity())){
+
+        HitResult result = physics.rayTrace(JomlUtil.from(sensorPos), JomlUtil.from(dir), distance + 1.0f,rayGroup.toArray(new CollisionGroup[0]));
+
+        if (result.isHit()) {
+            if (target.equals(result.getEntity())) {
                 sensorParent.send(new EntitySensedEvent(target));
             }
         }
-        
     }
 }
