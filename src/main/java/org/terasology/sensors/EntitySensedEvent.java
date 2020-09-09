@@ -1,23 +1,28 @@
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
+
 package org.terasology.sensors;
 
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.AbstractConsumableEvent;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.AbstractConsumableEvent;
 
 /**
- * An event executed when an entity is sensed. This will usually involve the entity entering within proximity of a sensor.
+ * An event executed when an entity is sensed. This will usually involve the entity entering within proximity of a
+ * sensor.
  */
-public class EntitySensedEvent extends AbstractConsumableEvent{
+public class EntitySensedEvent extends AbstractConsumableEvent {
     EntityRef target = EntityRef.NULL;
-    
-    public EntitySensedEvent(EntityRef entity){
+
+    public EntitySensedEvent(EntityRef entity) {
         target = entity;
     }
 
     /**
      * Returns the sensed entity, which has been detected by a sensor on the target entity.
+     *
      * @return the sensed entity
      */
-    public EntityRef getEntity(){
+    public EntityRef getEntity() {
         return target;
     }
 
