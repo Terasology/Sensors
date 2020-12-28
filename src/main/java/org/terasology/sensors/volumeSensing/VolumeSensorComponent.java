@@ -1,9 +1,11 @@
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.sensors.volumeSensing;
 
 import java.util.List;
 
+import org.joml.Quaternionf;
 import org.terasology.entitySystem.Component;
-import org.terasology.math.geom.Quat4f;
 import org.terasology.network.Replicate;
 import org.terasology.physics.CollisionGroup;
 import org.terasology.physics.StandardCollisionGroup;
@@ -16,13 +18,13 @@ import com.google.common.collect.Lists;
  * sense-able entities.
  */
 @ForceBlockActive
-public class VolumeSensorComponent implements Component{
+public class VolumeSensorComponent implements Component {
     /**
      * The {@link CollisionGroup}s that can be detected by this entity.
      */
     @Replicate
-    public List<CollisionGroup> detectGroups = Lists.<CollisionGroup>newArrayList(StandardCollisionGroup.DEFAULT, 
-            StandardCollisionGroup.CHARACTER);
+    public List<CollisionGroup> detectGroups = Lists.<CollisionGroup>newArrayList(StandardCollisionGroup.DEFAULT,
+        StandardCollisionGroup.CHARACTER);
 
     /**
      * The range, in all axes, from which other entities can be detected by this entity.
@@ -47,12 +49,12 @@ public class VolumeSensorComponent implements Component{
      * States the rotation in world-space of the sensor entity offset.
      */
     @Replicate
-    public Quat4f directionRot = new Quat4f(0, 0, 0, 1);
+    public Quaternionf directionRot = new Quaternionf(0, 0, 0, 1);
 
     /**
-     * States the rotation offset in world-space of the sensor entity, relative to the attached entity's world-space rotation.
+     * States the rotation offset in world-space of the sensor entity, relative to the attached entity's world-space
+     * rotation.
      */
     @Replicate
-    public Quat4f sensorRotOffset = new Quat4f(0, 0, 0, 1);
-
+    public Quaternionf sensorRotOffset = new Quaternionf(0, 0, 0, 1);
 }

@@ -1,15 +1,16 @@
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.sensors.volumeSensing;
 
 import java.util.List;
 
+import org.joml.Vector3f;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.EventPriority;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.location.LocationComponent;
-import org.terasology.math.JomlUtil;
-import org.terasology.math.geom.Vector3f;
 import org.terasology.physics.CollisionGroup;
 import org.terasology.physics.HitResult;
 import org.terasology.physics.Physics;
@@ -73,8 +74,8 @@ public class VolumeSensingSystem extends BaseComponentSystem {
         if (loc == null || targetLoc == null) {
             return;
         }
-        Vector3f sensorPos = loc.getWorldPosition();
-        Vector3f targetPos = targetLoc.getWorldPosition();
+        Vector3f sensorPos = loc.getWorldPosition(new Vector3f());
+        Vector3f targetPos = targetLoc.getWorldPosition(new Vector3f());
         float distance = sensorPos.distance(targetPos);
         if (distance > volumeSensor.range) {
             return;
@@ -103,7 +104,7 @@ public class VolumeSensingSystem extends BaseComponentSystem {
             rayGroup.add(StandardCollisionGroup.WORLD);
         }
 
-        HitResult result = physics.rayTrace(JomlUtil.from(sensorPos), JomlUtil.from(dir), distance + 1.0f,rayGroup.toArray(new CollisionGroup[0]));
+        HitResult result = physics.rayTrace(sensorPos, dir, distance + 1.0f,rayGroup.toArray(new CollisionGroup[0]));
 
         if (result.isHit()) {
             if (target.equals(result.getEntity())) {
