@@ -2,16 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.sensors.volumeSensing;
 
-import java.util.List;
-
-import org.joml.Quaternionf;
-import org.terasology.entitySystem.Component;
-import org.terasology.network.Replicate;
-import org.terasology.physics.CollisionGroup;
-import org.terasology.physics.StandardCollisionGroup;
-import org.terasology.world.block.ForceBlockActive;
-
 import com.google.common.collect.Lists;
+import org.joml.Quaternionf;
+import org.terasology.engine.entitySystem.Component;
+import org.terasology.engine.network.Replicate;
+import org.terasology.engine.physics.CollisionGroup;
+import org.terasology.engine.physics.StandardCollisionGroup;
+import org.terasology.engine.world.block.ForceBlockActive;
+
+import java.util.List;
 
 /**
  * A component defining the properties needed to sense another entity. This component is required for all sensing and

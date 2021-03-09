@@ -2,26 +2,25 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.sensors.volumeSensing;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.joml.Vector3f;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.EventPriority;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.location.LocationComponent;
-import org.terasology.physics.CollisionGroup;
-import org.terasology.physics.HitResult;
-import org.terasology.physics.Physics;
-import org.terasology.physics.StandardCollisionGroup;
-import org.terasology.physics.components.TriggerComponent;
-import org.terasology.physics.events.CollideEvent;
-import org.terasology.registry.In;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.EventPriority;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.location.LocationComponent;
+import org.terasology.engine.physics.CollisionGroup;
+import org.terasology.engine.physics.HitResult;
+import org.terasology.engine.physics.Physics;
+import org.terasology.engine.physics.StandardCollisionGroup;
+import org.terasology.engine.physics.components.TriggerComponent;
+import org.terasology.engine.physics.events.CollideEvent;
+import org.terasology.engine.registry.In;
 import org.terasology.sensors.EntitySensedEvent;
 import org.terasology.sensors.SensorComponent;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 /**
  * A sensor sub-system responsible for marking an entity within a detection radius as detected, assuming that there are
