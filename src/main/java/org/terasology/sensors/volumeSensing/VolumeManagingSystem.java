@@ -11,8 +11,8 @@ import org.terasology.engine.entitySystem.entity.lifecycleEvents.OnChangedCompon
 import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.health.DestroyEvent;
-import org.terasology.logic.health.EngineDamageTypes;
+import org.terasology.engine.logic.health.DestroyEvent;
+import org.terasology.engine.logic.health.EngineDamageTypes;
 import org.terasology.engine.logic.location.Location;
 import org.terasology.engine.logic.location.LocationComponent;
 import org.terasology.engine.network.NetworkComponent;
