@@ -58,7 +58,7 @@ public class VolumeSensorComponent implements Component<VolumeSensorComponent> {
     public Quaternionf sensorRotOffset = new Quaternionf(0, 0, 0, 1);
 
     @Override
-    public void copy(VolumeSensorComponent other) {
+    public void copyFrom(VolumeSensorComponent other) {
         this.detectGroups = Lists.newArrayList(other.detectGroups);
         this.range = other.range;
         this.sensorAttachedToEntity = other.sensorAttachedToEntity;

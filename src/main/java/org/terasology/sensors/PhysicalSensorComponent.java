@@ -24,7 +24,7 @@ public class PhysicalSensorComponent implements Component<PhysicalSensorComponen
     public boolean activated = false;
 
     @Override
-    public void copy(PhysicalSensorComponent other) {
+    public void copyFrom(PhysicalSensorComponent other) {
         this.sensor = other.sensor;
         this.activated = other.activated;
     }

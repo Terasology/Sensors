@@ -18,7 +18,7 @@ public class SensorComponent implements Component<SensorComponent> {
     public EntityRef physicalSensor = EntityRef.NULL;
 
     @Override
-    public void copy(SensorComponent other) {
+    public void copyFrom(SensorComponent other) {
         this.physicalSensor = other.physicalSensor;
     }
 }

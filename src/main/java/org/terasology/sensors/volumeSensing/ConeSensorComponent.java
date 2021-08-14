@@ -15,7 +15,7 @@ public class ConeSensorComponent implements Component<ConeSensorComponent> {
     float aperture = 60.0f;
 
     @Override
-    public void copy(ConeSensorComponent other) {
+    public void copyFrom(ConeSensorComponent other) {
         this.aperture = other.aperture;
     }
 }
