@@ -1,14 +1,14 @@
-// Copyright 2020 The Terasology Foundation
+// Copyright 2021 The Terasology Foundation
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.sensors.volumeSensing;
 
 import com.google.common.collect.Lists;
 import org.joml.Quaternionf;
-import org.terasology.engine.entitySystem.Component;
 import org.terasology.engine.network.Replicate;
 import org.terasology.engine.physics.CollisionGroup;
 import org.terasology.engine.physics.StandardCollisionGroup;
 import org.terasology.engine.world.block.ForceBlockActive;
+import org.terasology.gestalt.entitysystem.component.Component;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * sense-able entities.
  */
 @ForceBlockActive
-public class VolumeSensorComponent implements Component {
+public class VolumeSensorComponent implements Component<VolumeSensorComponent> {
     /**
      * The {@link CollisionGroup}s that can be detected by this entity.
      */
@@ -56,4 +56,14 @@ public class VolumeSensorComponent implements Component {
      */
     @Replicate
     public Quaternionf sensorRotOffset = new Quaternionf(0, 0, 0, 1);
+
+    @Override
+    public void copyFrom(VolumeSensorComponent other) {
+        this.detectGroups = Lists.newArrayList(other.detectGroups);
+        this.range = other.range;
+        this.sensorAttachedToEntity = other.sensorAttachedToEntity;
+        this.distanceFromEntity = other.distanceFromEntity;
+        this.directionRot.set(other.directionRot);
+        this.sensorRotOffset.set(other.sensorRotOffset);
+    }
 }
