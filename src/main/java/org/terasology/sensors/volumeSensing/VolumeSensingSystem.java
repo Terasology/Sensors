@@ -7,7 +7,6 @@ import org.joml.Vector3f;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.event.EventPriority;
 import org.terasology.engine.entitySystem.event.Priority;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.location.LocationComponent;
@@ -18,6 +17,7 @@ import org.terasology.engine.physics.StandardCollisionGroup;
 import org.terasology.engine.physics.components.TriggerComponent;
 import org.terasology.engine.physics.events.CollideEvent;
 import org.terasology.engine.registry.In;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 import org.terasology.sensors.EntitySensedEvent;
 import org.terasology.sensors.SensorComponent;
 
