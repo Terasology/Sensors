@@ -6,6 +6,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.event.EventPriority;
+import org.terasology.engine.entitySystem.event.Priority;
 import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
@@ -33,7 +34,8 @@ public class ConeSensingSystem extends BaseComponentSystem {
      * @param sensor the sensor belonging to the target entity
      * @param trigger the trigger belonging to the target entity
      */
-    @ReceiveEvent(priority = EventPriority.PRIORITY_HIGH)
+    @Priority(EventPriority.PRIORITY_HIGH)
+    @ReceiveEvent
     public void entityDetected(CollideEvent event, EntityRef entity, SensorComponent sensor, TriggerComponent trigger) {
         EntityRef sensorParent = sensor.physicalSensor;
         if (sensorParent == null || sensorParent == EntityRef.NULL) {
