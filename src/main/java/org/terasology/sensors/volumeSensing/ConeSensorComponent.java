@@ -12,7 +12,7 @@ public class ConeSensorComponent implements Component<ConeSensorComponent> {
     /**
      * The aperture of the cone, defined in degrees.
      */
-    float aperture = 60.0f;
+    public float aperture = 60.0f;
 
     @Override
     public void copyFrom(ConeSensorComponent other) {
